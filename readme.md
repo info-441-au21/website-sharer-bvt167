@@ -1,3 +1,12 @@
-# Express project starter
+# Assignment 2: Website Sharer
 
-This is a starter project for Express. It was created with the express project generator and then modified to be a module type (uses imports instead of requires), and with VSCode launch settings.
+## Creative Component
+
+- I chose to also pull the site name from the Open Graph tags if it exists. If a web page is part
+of a larger website name then the larger website name will appear above the title.
+
+https://www.theatlantic.com/science/archive/2021/10/mystery-why-our-ancestors-left-africa/620426/
+
+- I replaced all of the hard-coded stylings with responsive stylings (px to rem). This allows
+the preview to scale responsively as the screen size changes. For this change, any URL should
+work.

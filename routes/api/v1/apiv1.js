@@ -13,7 +13,8 @@ router.get('/previewurl', function(req, res, next) {
     res.send(getPreviewHtml(previewHtmlObj));
     return;
   }
-  const SELECTED_META_TAGS = new Set(["og:url", "og:title", "og:image", "og:description"])
+  const SELECTED_META_TAGS = new Set(["og:url", "og:title", "og:image", "og:description",
+                                      "og:site_name"]);
   fetch(url)
     .then(resp => resp.text())
     .then(respText => {
@@ -34,6 +35,7 @@ const getPreviewHtmlObj = (metaTagsObj, parsedHtml, url) => {
   previewHtmlObj["title"] = metaTagsObj["og:title"] ? metaTagsObj["og:title"] : parsedHtml.querySelectorAll("title")[0].textContent;
   previewHtmlObj["image"] = metaTagsObj["og:image"];
   previewHtmlObj["description"] = metaTagsObj["og:description"];
+  previewHtmlObj["site_name"] = metaTagsObj["og:site_name"];
   if (!previewHtmlObj["title"]) {
     previewHtmlObj["title"] = url;
   }
@@ -42,12 +44,13 @@ const getPreviewHtmlObj = (metaTagsObj, parsedHtml, url) => {
 
 const getPreviewHtml = (previewHtmlObj) => {
   return `
-    <div style="max-width: 300px; border: solid 1px; padding: 3px; text-align: center;">
+    <div style="max-width: 12rem; border: solid 0.2rem; padding: 1rem; margin: 1rem; text-align: center;">
       <a href="${previewHtmlObj["url"]}">
+          ${previewHtmlObj["site_name"] ? `<p>${previewHtmlObj["site_name"]}</p>` : ""}
           <p><strong>
             ${previewHtmlObj["title"]}
           </strong></p>
-          ${previewHtmlObj["image"] ? `<img src="${previewHtmlObj["image"]}" style="max-height: 200px; max-width: 270px;">` : ""}
+          ${previewHtmlObj["image"] ? `<img src="${previewHtmlObj["image"]}" style="max-height: 10rem; max-width: 10rem;">` : ""}
       </a>
       ${previewHtmlObj["description"] ? `<p>${previewHtmlObj["description"]}</p>` : ""}
     </div>
@@ -59,7 +62,8 @@ const getEmptyPreviewHtmlObj = () => {
     "url": undefined,
     "title": undefined,
     "image": undefined,
-    "description": undefined
+    "description": undefined,
+    "site_name": undefined,
   }
 }
 

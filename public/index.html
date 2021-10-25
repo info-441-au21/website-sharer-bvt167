@@ -7,11 +7,17 @@
   <script src="javascripts/api.js"></script>
 </head>
 
-<body>
-  <h1>Website Sharer</h1>
-  <p>Type in a website url to see the sharing preview</p>
-  <input type="text" id="urlInput" />
-  <button onclick="previewUrl()">Preview URL</button>
+<body onload="init()">
+  <h1>Website Sharer <button onclick="loadPosts()">refresh</button></h1>
+  <h2>Posts:</h2>
+  <div id="posts_box"></div>
+  <hr>
+  <hr>
+  <h2>Post new website:</h2>
+  <p>Enter a description of your post (e.g., your reason for sharing)</p>
+  <input type="text" id="descriptionInput"/>
+  <p>Enter the website url</p><input type="text" id="urlInput" />
+  <button onclick="postUrl()">Post</button> <span id="postStatus"></span>
   <div id="url_previews"></div>
 </body>
 

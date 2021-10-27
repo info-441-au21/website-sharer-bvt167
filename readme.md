@@ -1,4 +1,4 @@
-# Assignment 2: Website Sharer
+# Assignment 3: Database
 
 - https://sheltered-sands-62514.herokuapp.com/
 

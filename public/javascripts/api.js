@@ -1,7 +1,7 @@
 const apiVersion = "v2"
 
 
-// this function should call your URL preview api endpoint 
+// this function should call your URL preview api endpoint
 // and return an html string with the preview
 async function getURLPreview(url){
     try{
@@ -19,8 +19,8 @@ async function loadPostsApi(){
     return postsJson;
 }
 
-async function postUrlApi(url, description){
-    const myData = {url: url, description: description};
+async function postUrlApi(url, username, description){
+    const myData = {url: url, username: username, description: description};
     let status = await fetch(`api/${apiVersion}/posts`,
         {
             method: "POST",

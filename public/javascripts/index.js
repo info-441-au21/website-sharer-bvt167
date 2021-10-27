@@ -10,7 +10,9 @@ function init(){
 async function loadPosts(){
     let postsJson = await loadPostsApi();
     let postsHtml = postsJson.map(postInfo => {
-        return `<div class="post">${postInfo.description}${postInfo.htmlPreview}</div>`
+      return `<div class="post">
+                ${postInfo.username}: ${postInfo.description}${postInfo.htmlPreview}
+              </div>`
     }).join("\n");
     document.getElementById("posts_box").innerHTML = postsHtml;
 }
@@ -18,8 +20,9 @@ async function loadPosts(){
 async function postUrl(){
     document.getElementById("postStatus").innerHTML = "sending data..."
     let url = document.getElementById("urlInput").value;
+    let username = document.getElementById("usernameInput").value;
     let description = document.getElementById("descriptionInput").value;
-    let status = await postUrlApi(url, description);
+    let status = await postUrlApi(url, username, description);
 
     if(status.status == "error"){
         document.getElementById("postStatus").innerText = "Error:" + status.error;

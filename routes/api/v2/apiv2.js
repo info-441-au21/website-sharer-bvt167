@@ -16,6 +16,7 @@ async function main() {
 
   const postSchema = new mongoose.Schema({
     url: String,
+    username: String,
     description: String,
     created_at: Date,
   });
@@ -27,7 +28,8 @@ router.post('/posts', async function(req, res, next) {
   const post = req.body;
   let resp = { status: "success" };
   try {
-    const newPost = Post({ url: post.url, description: post.description, created_at: new Date() });
+    const newPost = Post({ url: post.url, username: post.username, description: post.description,
+                           created_at: new Date() });
     await newPost.save();
   } catch(e) {
     resp.status = "error";
@@ -71,6 +73,7 @@ const getResponsePostFromPost = async (post) => {
   let respPost = {};
   const previewHtml = await getHtmlPreviewFromUrl(post.url);
   respPost.description = post.description;
+  respPost.username = post.username;
   respPost.htmlPreview = previewHtml;
   return respPost;
 

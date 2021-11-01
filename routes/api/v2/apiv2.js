@@ -101,6 +101,11 @@ const getPreviewHtmlObj = (metaTagsObj, parsedHtml, url) => {
   if (!previewHtmlObj["title"]) {
     previewHtmlObj["title"] = url;
   }
+  for (let element in previewHtmlObj) {
+    if (previewHtmlObj[element]) {
+      previewHtmlObj[element] = escapeHTML(previewHtmlObj[element]);
+    }
+  }
   return previewHtmlObj;
 }
 
@@ -128,5 +133,14 @@ const getEmptyPreviewHtmlObj = () => {
     "site_name": undefined,
   }
 }
+
+const escapeHTML = str => str.replace(/[&<>'"]/g,
+  tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[tag]));
 
 export default router;

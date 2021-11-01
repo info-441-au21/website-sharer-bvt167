@@ -39,7 +39,7 @@ async function postUrl(){
 let lastURLPreviewed = "";
 async function previewUrl(){
     document.getElementById("postStatus").innerHTML = "";
-    let url = document.getElementById("urlInput").value;
+    let url = escapeHTML(document.getElementById("urlInput").value);
     if(url != lastURLPreviewed){
         lastURLPreviewed = url;
         document.getElementById("url_previews").innerHTML = "Loading preview..."
@@ -49,3 +49,12 @@ async function previewUrl(){
         }
     }
 }
+
+const escapeHTML = str => str.replace(/[&<>'"]/g,
+  tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[tag]));

@@ -12,7 +12,10 @@ const SELECTED_META_TAGS = new Set(["og:url", "og:title", "og:image", "og:descri
 main().catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb://localhost:27017/a3');
+  const localURI = 'mongodb://localhost:27017/a3';
+  const onlineURI = 'mongodb+srv://bvt:Password123@info-441.ctuvu.mongodb.net/info-441?retryWrites=true&w=majority'
+
+  await mongoose.connect(onlineURI);
 
   const postSchema = new mongoose.Schema({
     url: String,
@@ -36,6 +39,7 @@ router.post('/posts', async function(req, res, next) {
     resp.error = e.message;
     res.status("500");
   };
+  resp.status = "failure";
   res.json(resp);
 });
 

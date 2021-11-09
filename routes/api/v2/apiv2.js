@@ -16,7 +16,7 @@ async function main() {
   const onlineURI = 'mongodb+srv://bvt:Password123@info-441.ctuvu.mongodb.net/info-441?retryWrites=true&w=majority'
 
   await mongoose.connect(onlineURI);
-  
+
   const postSchema = new mongoose.Schema({
     url: String,
     username: String,
@@ -39,6 +39,7 @@ router.post('/posts', async function(req, res, next) {
     resp.error = e.message;
     res.status("500");
   };
+  resp.status = "failure";
   res.json(resp);
 });
 

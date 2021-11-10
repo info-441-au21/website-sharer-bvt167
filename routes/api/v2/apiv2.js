@@ -27,7 +27,32 @@ async function main() {
   Post = mongoose.model("Post", postSchema);
 }
 
+router.get('/getIdentity', (req, res) => {
+  const session = req.session;
+  let resp = {};
+  if (session.isAuthenticated) {
+    resp.status = "loggedin";
+    const userInfo = {
+      name: session.account.name,
+      username: session.account.username
+    }
+    resp.userInfo = userInfo;
+  } else {
+    resp.status = "loggedout";
+    res.status(401);
+  }
+  res.json(resp);
+});
+
 router.post('/posts', async function(req, res, next) {
+  if (!req.session.isAuthenticated) {
+    const resp = {
+      status: "error",
+      error: "not logged in"
+    }
+    res.status(401).json(resp);
+    return;
+  }
   const post = req.body;
   let resp = { status: "success" };
   try {

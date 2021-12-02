@@ -1,4 +1,4 @@
-const apiVersion = "v2"
+const apiVersion = "v3"
 
 async function loadIdentityApi(){
     try{
@@ -31,6 +31,12 @@ async function loadPostsApi(){
     return postsJson;
 }
 
+async function loadUserPostsApi(username){
+    let response = await fetch(`api/${apiVersion}/userPosts?username=${encodeURIComponent(username)}`);
+    let postsJson = await response.json();
+    return postsJson;
+}
+
 async function postUrlApi(url, description){
     try{
     const myData = {url: url, description: description};
@@ -45,6 +51,73 @@ async function postUrlApi(url, description){
     )
     let responseJson = await response.json();
     return responseJson;
+    }catch(error){
+        return {status: error, error: error}
+    }
+}
+
+async function deletePostAPI(postID){
+    try{
+        let response = await fetch(`api/${apiVersion}/posts`, {
+            method: "DELETE",
+            body: JSON.stringify({postID: postID}),
+            headers: {'Content-Type': 'application/json'}
+        })
+        let responseJson = await response.json();
+        return responseJson;
+    }catch(error){
+        return {status: error, error: error}
+    }
+}
+
+async function likePostAPI(postID){
+    try{
+        let response = await fetch(`api/${apiVersion}/likePost`, {
+            method: "POST",
+            body: JSON.stringify({postID: postID}),
+            headers: {'Content-Type': 'application/json'}
+        })
+        let responseJson = await response.json();
+        return responseJson;
+    }catch(error){
+        return {status: error, error: error}
+    }
+}
+
+async function unlikePostAPI(postID){
+    try{
+        let response = await fetch(`api/${apiVersion}/unlikePost`, {
+            method: "POST",
+            body: JSON.stringify({postID: postID}),
+            headers: {'Content-Type': 'application/json'}
+        })
+        let responseJson = await response.json();
+        return responseJson;
+    }catch(error){
+        return {status: error, error: error}
+    }
+}
+
+
+async function getCommentsAPI(postID){
+    try{
+        let response = await fetch(`api/${apiVersion}/comments?postID=${postID}`)
+        let responseJson = await response.json();
+        return responseJson;
+    }catch(error){
+        return {status: error, error: error}
+    }
+}
+
+async function postCommentAPI(postID, newComment){
+    try{
+        let response = await fetch(`api/${apiVersion}/comments`, {
+            method: "POST",
+            body: JSON.stringify({postID: postID, newComment: newComment}),
+            headers: {'Content-Type': 'application/json'}
+        })
+        let responseJson = await response.json();
+        return responseJson;
     }catch(error){
         return {status: error, error: error}
     }

@@ -5,37 +5,40 @@ function init(){
     urlInput.onclick = previewUrl;
 
     loadIdentity();
-
     loadPosts();
 }
 
-async function loadIdentity(){
-    let identityInfo = await loadIdentityApi();
-    let identity_div = document.getElementById("identity_div");
-    if(identityInfo.status == "error"){
-        identity_div.innerHTML = `<div>
-        <button onclick="loadIdentity()">retry</button>
-        Error loading identity: <span id="identity_error_span"></span>
-        </div>`;
-        document.getElementById("identity_error_span").innerText = identityInfo.error;
-        document.getElementById("make_post_div").classList.add("d-none");
-    } else if(identityInfo.status == "loggedin"){
-        identity_div.innerHTML = `
-        <a href="#">${identityInfo.userInfo.name} (${identityInfo.userInfo.username})</a>
-        <a href="signout" class="btn btn-danger" role="button">Log out</a>`;
-        document.getElementById("make_post_div").classList.remove("d-none");
-    } else { //loggedout
-        identity_div.innerHTML = `
-        <a href="signin" class="btn btn-primary" role="button">Log in</a>`;
-        document.getElementById("make_post_div").classList.add("d-none");
-    }
-}
-
-
 async function loadPosts(){
     let postsJson = await loadPostsApi();
+    console.log(postsJson);
     let postsHtml = postsJson.map(postInfo => {
-        return `<div class="post">${postInfo.description}${postInfo.htmlPreview}</div>`
+        return `
+        <div class="post">
+            ${postInfo.description}
+            ${postInfo.htmlPreview}
+            <div><a href="/userInfo.html?user=${encodeURIComponent(postInfo.username)}">${postInfo.username}</a>, ${postInfo.created_date}</div>
+            <div class="post-interactions">
+                <div>
+                    <span title="${postInfo.likes}"> ${postInfo.likes ? `${postInfo.likes.length}` : 0} likes </span> &nbsp; &nbsp; 
+                    <span class="heart-button-span ${myIdentity? "": "d-none"}">
+                        ${postInfo.likes && postInfo.likes.includes(myIdentity) ? 
+                            `<button class="heart_button" onclick='unlikePost("${postInfo.id}")'>&#x2665;</button>` : 
+                            `<button class="heart_button" onclick='likePost("${postInfo.id}")'>&#x2661;</button>`} 
+                    </span>
+                </div>
+                <br>
+                <button onclick='toggleComments("${postInfo.id}")'>View/Hide comments</button>
+                <div id='comments-box-${postInfo.id}' class="comments-box d-none">
+                    <button onclick='refreshComments("${postInfo.id}")')>refresh comments</button>
+                    <div id='comments-${postInfo.id}'></div>
+                    <div class="new-comment-box ${myIdentity? "": "d-none"}">
+                        New Comment:
+                        <textarea type="textbox" id="new-comment-${postInfo.id}"></textarea>
+                        <button onclick='postComment("${postInfo.id}")'>Post Comment</button>
+                    </div>
+                </div>
+            </div>
+        </div>`
     }).join("\n");
     document.getElementById("posts_box").innerHTML = postsHtml;
 }
@@ -69,5 +72,68 @@ async function previewUrl(){
         if(url == lastURLPreviewed){
             document.getElementById("url_previews").innerHTML = previewHtml;
         }
+    }
+}
+
+async function likePost(postId){
+    let responesJSON = await likePostAPI(postId);
+    if(responesJSON.status == "error"){
+        console.log("error:" + responesJSON.error);
+    }else{
+        loadPosts();
+    }
+}
+
+
+async function unlikePost(postId){
+    let responesJSON = await unlikePostAPI(postId);
+    if(responesJSON.status == "error"){
+        console.log("error:" + responesJSON.error);
+    }else{
+        loadPosts();
+    }
+}
+
+
+function getCommentHTML(commentsJSON){
+    return commentsJSON.map(commentInfo => {
+        return `
+        <div class="individual-comment-box">
+            <div>${escapeHTML(commentInfo.comment)}</div>
+            <div> - <a href="/userInfo.html?user=${encodeURIComponent(commentInfo.username)}">${commentInfo.username}</a>, ${commentInfo.created_date}</div>
+        </div>`
+    }).join(" ");
+}
+
+async function toggleComments(postID){
+    let element = document.getElementById(`comments-box-${postID}`);
+    if(!element.classList.contains("d-none")){
+        element.classList.add("d-none");
+    }else{
+        element.classList.remove("d-none");
+        let commentsElement = document.getElementById(`comments-${postID}`);
+        if(commentsElement.innerHTML == ""){ // load comments if not yet loaded
+            commentsElement.innerHTML = "loading..."
+            commentsJSON = await getCommentsAPI(postID);
+            commentsElement.innerHTML = getCommentHTML(commentsJSON);
+        }
+    }
+    
+}
+
+async function refreshComments(postID){
+    let commentsElement = document.getElementById(`comments-${postID}`);
+    commentsElement.innerHTML = "loading..."
+    commentsJSON = await getCommentsAPI(postID);
+    commentsElement.innerHTML = getCommentHTML(commentsJSON);
+}
+
+async function postComment(postID){
+    let newComment = document.getElementById(`new-comment-${postID}`).value;
+    let responesJSON = await postCommentAPI(postID, newComment);
+    if(responesJSON.status == "error"){
+        console.log("error:" + responesJSON.error);
+    }else{
+        refreshComments(postID);
     }
 }

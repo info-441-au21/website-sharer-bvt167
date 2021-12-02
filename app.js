@@ -6,7 +6,7 @@ import sessions from 'express-session';
 import MsIdExpress from 'microsoft-identity-express';
 
 import indexRouter from './routes/index.js';
-import apiv2Router from './routes/api/v2/apiv2.js';
+import apiv3Router from './routes/api/v3/apiv3.js';
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -23,7 +23,7 @@ const appSettings = {
     clientSecret: "IyC7Q~Jc53oxjLM4ciDLZf7PsDlDAx_xAFn2x",
   },
   authRoutes: {
-    redirect: "https://bta167.me/redirect",
+    redirect: "/redirect",
     error: "/error",
     unauthorized: "/unauthorized",
   }
@@ -47,7 +47,7 @@ app.use(MS_ID.initialize());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/api/v2', apiv2Router);
+app.use('/api/v3', apiv3Router);
 
 app.get('/signin',
   MS_ID.signIn({
@@ -67,6 +67,32 @@ app.get('/error', (req, res) => {
 
 app.get('unauthorized', (req, res) => {
   res.status("401").send("Permission Denied");
+});
+
+// use this by going to urls like:
+// http://localhost:3000/fakelogin?name=anotheruser
+app.get('/fakelogin', (req, res) => {
+  let newName = req.query.name;
+  let session=req.session;
+  session.isAuthenticated = true;
+  if(!session.account){
+      session.account = {};
+  }
+  session.account.name = newName;
+  session.account.username = newName;
+  console.log("set session");
+  res.redirect("/api/v3/getIdentity");
+});
+
+// use this by going to a url like:
+// http://localhost:3000/fakelogout
+app.get('/fakelogout', (req, res) => {
+  let newName = req.query.name;
+  let session=req.session;
+  session.isAuthenticated = false;
+  session.account = {};
+  console.log("you have fake logged out");
+  res.redirect("/api/v3/getIdentity");
 });
 
 export default app;

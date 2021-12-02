@@ -16,4 +16,21 @@ a {
   width:300px;
   margin:5px;
   border: solid 1px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.heart_button{
+  color:red;
+}
+
+.comments-box{
+  border: 1px black solid;
+  margin: 10px;
+}
+
+.individual-comment-box{
+  border: 1px black solid;
+  margin: 3px;
 }

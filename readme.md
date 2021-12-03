@@ -1,4 +1,4 @@
-# Assignment 5: Auth
+# Assignment 6: User Actions
 
 - https://bta167.me/
 

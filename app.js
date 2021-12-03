@@ -69,30 +69,30 @@ app.get('unauthorized', (req, res) => {
   res.status("401").send("Permission Denied");
 });
 
-// use this by going to urls like:
-// http://localhost:3000/fakelogin?name=anotheruser
-app.get('/fakelogin', (req, res) => {
-  let newName = req.query.name;
-  let session=req.session;
-  session.isAuthenticated = true;
-  if(!session.account){
-      session.account = {};
-  }
-  session.account.name = newName;
-  session.account.username = newName;
-  console.log("set session");
-  res.redirect("/api/v3/getIdentity");
-});
+// // use this by going to urls like:
+// // http://localhost:3000/fakelogin?name=anotheruser
+// app.get('/fakelogin', (req, res) => {
+//   let newName = req.query.name;
+//   let session=req.session;
+//   session.isAuthenticated = true;
+//   if(!session.account){
+//       session.account = {};
+//   }
+//   session.account.name = newName;
+//   session.account.username = newName;
+//   console.log("set session");
+//   res.redirect("/api/v3/getIdentity");
+// });
 
-// use this by going to a url like:
-// http://localhost:3000/fakelogout
-app.get('/fakelogout', (req, res) => {
-  let newName = req.query.name;
-  let session=req.session;
-  session.isAuthenticated = false;
-  session.account = {};
-  console.log("you have fake logged out");
-  res.redirect("/api/v3/getIdentity");
-});
+// // use this by going to a url like:
+// // http://localhost:3000/fakelogout
+// app.get('/fakelogout', (req, res) => {
+//   let newName = req.query.name;
+//   let session=req.session;
+//   session.isAuthenticated = false;
+//   session.account = {};
+//   console.log("you have fake logged out");
+//   res.redirect("/api/v3/getIdentity");
+// });
 
 export default app;

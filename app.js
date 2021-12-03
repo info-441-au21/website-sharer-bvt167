@@ -23,7 +23,7 @@ const appSettings = {
     clientSecret: "IyC7Q~Jc53oxjLM4ciDLZf7PsDlDAx_xAFn2x",
   },
   authRoutes: {
-    redirect: "/redirect",
+    redirect: "https://bta167.me/",
     error: "/error",
     unauthorized: "/unauthorized",
   }

@@ -4,8 +4,9 @@ async function init(){
 }
 
 async function saveUserInfo(){
-    //TODO: do an ajax call to save whatever info you want about the user from the user table
-    //see postComment() in the index.js file as an example of how to do this
+    const favoriteIceCream = document.getElementById("favorite_ice_cream_input").value;
+    await postUserInfoAPI(favoriteIceCream);
+    await loadUserInfo();
 }
 
 async function loadUserInfo(){
@@ -20,7 +21,8 @@ async function loadUserInfo(){
         document.getElementById("user_info_new_div").classList.add("d-none");
     }
     
-    //TODO: do an ajax call to load whatever info you want about the user from the user table
+    const userInfo = await loadUserInfoAPI();
+    document.getElementById("user_info_div").innerText = `Favorite Ice Cream: ${userInfo.favoriteIceCream}`;
 
     loadUserInfoPosts(username)
 }

@@ -122,3 +122,27 @@ async function postCommentAPI(postID, newComment){
         return {status: error, error: error}
     }
 }
+
+async function loadUserInfoAPI() {
+  try {
+    let response = await fetch(`api/${apiVersion}/userInfo`)
+    let responseJson = await response.json();
+    return responseJson;
+  } catch(error) {
+      return {status: error, error: error}
+  }
+}
+
+async function postUserInfoAPI(favoriteIceCream){
+  try{
+      let response = await fetch(`api/${apiVersion}/userInfo`, {
+          method: "POST",
+          body: JSON.stringify({favoriteIceCream: favoriteIceCream}),
+          headers: {'Content-Type': 'application/json'}
+      })
+      let responseJson = await response.json();
+      return responseJson;
+  }catch(error){
+      return {status: error, error: error}
+  }
+}

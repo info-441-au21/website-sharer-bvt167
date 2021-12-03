@@ -7,6 +7,7 @@ var router = express.Router();
 
 let Post;
 let Comment;
+let UserInfo;
 
 const SELECTED_META_TAGS = new Set(["og:url", "og:title", "og:image", "og:description",
                                     "og:site_name"]);
@@ -35,6 +36,12 @@ async function main() {
     created_date: Date,
   });
   Comment = mongoose.model("Comment", commentSchema);
+
+  const userInfoSchema = new mongoose.Schema({
+    username: String,
+    favoriteIceCream: String
+  });
+  UserInfo = mongoose.model("UserInfo", userInfoSchema);
 }
 
 router.get('/getIdentity', (req, res) => {
@@ -209,6 +216,47 @@ router.get('/previewurl', async function(req, res, next) {
     res.send(htmlPreview);
   } catch(e) {
     res.status("500").send(e.message);
+  }
+});
+
+router.get('/userInfo', async function(req, res, next) {
+  const session = req.session;
+  if (!session.isAuthenticated) {
+    res.status(400).json({status: "error", error: "not logged in"});
+    return;
+  }
+
+  try {
+    const userInfo = await UserInfo.findOne({username: session.account.username});
+    res.json(userInfo);
+  } catch(e) {
+    console.log(e);
+    res.status(500).json({status: "error", error: e.message});
+  }
+});
+
+router.post('/userInfo', async function(req, res, next) {
+  const session = req.session;
+  if (!session.isAuthenticated) {
+    res.status(400).json({status: "error", error: "not logged in"});
+    return;
+  }
+
+  try {
+    let userInfo = await UserInfo.findOne({username: session.account.username});
+    if (userInfo) {
+      userInfo.favoriteIceCream = req.body.favoriteIceCream;
+    } else {
+      userInfo = UserInfo({
+        username: session.account.username,
+        favoriteIceCream: req.body.favoriteIceCream
+      });
+    }
+    await userInfo.save();
+    res.json({status: "success"});
+  } catch(e) {
+    console.log(e);
+    res.status(500).json({status: "error", error: e.message});
   }
 });
 
